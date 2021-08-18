@@ -1,0 +1,53 @@
+<div class="container">
+  <div class="btn-toolbar" style="display: inline">
+    <button class="btn btn-primary me-1" (click)="buttonOnClick()">logout</button>
+    <button class="btn btn-primary me-1" (click)="addContactButtonOnClick()">add contact</button>
+  </div>
+
+  <form [formGroup]="searchForm">
+    <div class="row">
+      <div class="col">
+        <input formControlName="fullName" type="text" class="form-control" placeholder="Name" aria-label="Name">
+      </div>
+      <div class="col">
+        <input formControlName="address" type="text" class="form-control" placeholder="Address" aria-label="Address">
+      </div>
+      <div class="col">
+        <input formControlName="province" type="text" class="form-control" placeholder="Province" aria-label="Province">
+      </div>
+      <div class="col">
+        <input formControlName="district" type="text" class="form-control" placeholder="District" aria-label="District">
+      </div>
+    </div>
+  </form>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Address</th>
+        <th scope="col">Province</th>
+        <th scope="col">District</th>
+        <th scope="col">GSM</th>
+        <th scope="col">Owner</th>
+        <th scope="col">Operations</th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let item of contacts | async">
+    <tr (click)="itemClick(item)">
+      <td scope="row">{{item.fullName}}</td>
+      <td scope="row">{{item.address}}</td>
+      <td scope="row">{{item.province}}</td>
+      <td scope="row">{{item.district}}</td>
+      <td scope="row">{{item.phoneNumber}}</td>
+      <td scope="row">{{item.owner.fullName}}</td>
+      <td scope="row">
+        <div class="btn-group">
+          <button class="btn btn-danger">Delete</button>
+          <button class="btn btn-primary">Update</button>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
