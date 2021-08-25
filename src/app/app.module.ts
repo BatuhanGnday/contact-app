@@ -6,14 +6,19 @@ import { AppComponent } from './app.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import { LoginComponent } from './scenes/login/login.component';
 import { HomeComponent } from './scenes/home/home.component';
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {JwtInterceptor} from "./interceptors/jwt.interceptor";
 import { ListItemComponent } from './scenes/home/components/list-item/list-item.component';
-import { AddContactComponent } from './scenes/add-contact/add-contact.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { RegisterComponent } from './scenes/register/register.component';
 import { RegisterModalComponent } from './components/register-modal/register-modal.component';
 import { ContactDetailModalComponent } from './components/contact-detail-modal/contact-detail-modal.component';
+import {NgbDatepickerModule, NgbModule, NgbPaginationModule} from "@ng-bootstrap/ng-bootstrap";
+import { ContactSearchBarComponent } from './components/contact-search-bar/contact-search-bar.component';
+import { AddContactModalComponent } from './components/add-contact-modal/add-contact-modal.component';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { ProfileComponent } from './scenes/profile/profile.component';
+import { PageNotFoundComponent } from './scenes/page-not-found/page-not-found.component';
 
 @NgModule({
   declarations: [
@@ -21,18 +26,26 @@ import { ContactDetailModalComponent } from './components/contact-detail-modal/c
     LoginComponent,
     HomeComponent,
     ListItemComponent,
-    AddContactComponent,
     NavbarComponent,
     RegisterComponent,
     RegisterModalComponent,
-    ContactDetailModalComponent
+    ContactDetailModalComponent,
+    ContactSearchBarComponent,
+    AddContactModalComponent,
+    ConfirmationDialogComponent,
+    ProfileComponent,
+    PageNotFoundComponent,
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        HttpClientModule,
-        ReactiveFormsModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    NgbPaginationModule,
+    NgbDatepickerModule,
+    NgbModule,
+    FormsModule
+  ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
   ],

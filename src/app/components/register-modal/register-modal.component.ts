@@ -20,10 +20,6 @@ export class RegisterModalComponent implements OnInit {
   registerForm: FormGroup;
   error: any;
 
-  @Output()
-  user: EventEmitter<RegisterRequest> = new EventEmitter<RegisterRequest>();
-
-
   constructor(
     private activeModal: NgbActiveModal,
     private authService: AuthService,

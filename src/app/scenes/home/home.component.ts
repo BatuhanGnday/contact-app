@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Host, OnInit, Output} from '@angular/core';
 import {AuthService} from "../../services/auth/auth.service";
 import {Router} from "@angular/router";
 import {User} from "../../models/User";
@@ -9,6 +9,9 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import { debounceTime, map } from "rxjs/operators";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {ContactDetailModalComponent} from "../../components/contact-detail-modal/contact-detail-modal.component";
+import { SweetAlertResult } from 'sweetalert2';
+import Swal from "sweetalert2";
+import {AddContactModalComponent} from "../../components/add-contact-modal/add-contact-modal.component";
 
 export interface SearchContactFormModel {
   fullName?: string;
@@ -26,23 +29,39 @@ export interface SearchContactFormModel {
 export class HomeComponent implements OnInit {
   contacts: BehaviorSubject<Contact[]>;
   searchForm: FormGroup;
+  activeUser: User;
 
-  @Output()
-  contact: EventEmitter<Contact> = new EventEmitter<Contact>();
+  page: number = 1;
+  pageSize: number = 20;
+  collectionSize: number;
 
   constructor(
     private authService: AuthService,
     private contactService: ContactService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    //@Host() private addContactModal: AddContactModalComponent
   ) { }
 
   ngOnInit(): void {
+    this.activeUser = JSON.parse(<string>localStorage.getItem("user")) as User;
+
     this.createForm();
-    this.loadInitialData();
     this.contacts = new BehaviorSubject<Contact[]>([]);
+    this.loadInitialData();
     this.onValueChange();
+  }
+
+  loadInitialData() {
+    this.contactService.fetchUserContacts().subscribe((e: Contact[])=>{
+      this.collectionSize = e.length;
+      this.contacts.next(e);
+    });
+  }
+
+  havePermission(item: Contact): boolean {
+    return item.owner.guid != this.activeUser.guid;
   }
 
   createForm() {
@@ -67,12 +86,6 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  loadInitialData() {
-    this.contactService.fetchUserContacts().subscribe(e=>{
-      this.contacts.next(e);
-    });
-  }
-
   onValueChange() {
     this.searchForm.valueChanges.pipe(
       debounceTime(400)
@@ -81,28 +94,38 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  buttonOnClick() {
-    console.log(localStorage.getItem("user"));
-    let str = localStorage.getItem("user");
-    if (str != null) {
-      let json = JSON.parse(str);
-      let user: User = json as User;
-      console.log(user)
-    }
-    this.authService.logout();
-    this.router.navigate(['/login']);
+  presentEditContactModal(item: Contact) {
+    let modalRef = this.modalService.open(ContactDetailModalComponent);
+    let modalInstance = modalRef.componentInstance;
+    modalInstance.contact = new BehaviorSubject(item);
+    modalRef.closed.subscribe((next: Contact) => {
+      let indexOfItem = this.contacts.value.indexOf(item);
+      this.contacts.value[indexOfItem] = next;
+      this.contacts.next(this.contacts.value);
+    });
   }
 
-
-
-  addContactButtonOnClick() {
-    this.router.navigate(['/contact']);
-  }
-
-  itemClick(item: Contact) {
-    let modalRef = this.modalService.open(ContactDetailModalComponent).componentInstance;
-    modalRef.contact = item;
-    this.contact.next(item);
-    console.log(item.district);
+  deleteButton(item: Contact) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result: SweetAlertResult) => {
+      if (result.isConfirmed) {
+        this.contactService.deleteContactByGuid(item.guid).subscribe((e: Contact) => {
+          let result = this.contacts.value.filter(e => e.guid !== item.guid);
+          this.contacts.next(result);
+        });
+        Swal.fire(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        )
+      }
+    })
   }
 }

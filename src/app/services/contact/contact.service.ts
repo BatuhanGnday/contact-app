@@ -5,6 +5,7 @@ import {Contact} from "../../models/contact/Contact";
 import {environment} from "../../../environments/environment";
 import {SearchContactFormModel} from "../../scenes/home/home.component";
 import {CreateContactRequest} from "../../models/contact/post/CreateContactRequest";
+import {PatchContactRequest} from "../../models/contact/patch/PatchContactRequest";
 
 @Injectable({
   providedIn: 'root'
@@ -37,12 +38,21 @@ export class ContactService {
     return this.http.get<Contact[]>(url, { params: params });
   }
 
-  createContact(body: CreateContactRequest): void {
+  patchContact(contactGuid: string, body: PatchContactRequest): Observable<Contact> {
+    const url: string = `${environment.apiUrl}contacts/${contactGuid}`;
+    console.log("patch request done")
+    console.log(body);
+    console.log(url);
+    return this.http.patch<Contact>(url, body);
+  }
+
+  createContact(body: CreateContactRequest): Observable<Contact> {
     const url: string = `${environment.apiUrl}contacts`;
-    let contactObservable = this.http.post<Contact>(url, body, {observe: "response"}).subscribe(
-      e => {
-        console.log(e.type.toString());
-      }
-    );
+    return this.http.post<Contact>(url, body);
+  }
+
+  deleteContactByGuid(guid: string): Observable<Contact> {
+    const url: string = `${environment.apiUrl}contacts/${guid}`;
+    return this.http.delete<Contact>(url);
   }
 }

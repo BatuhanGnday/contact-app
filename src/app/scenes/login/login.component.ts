@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../../services/auth/auth.service";
-import {NgbActiveModal, NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef} from "@ng-bootstrap/ng-bootstrap";
 import {RegisterModalComponent} from "../../components/register-modal/register-modal.component";
-import {User} from "../../models/User";
 import {RegisterRequest} from "../../models/auth/register/RegisterRequest";
 
 @Component({
@@ -29,7 +28,6 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.createForm();
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-    this.whenModalClosed();
   }
 
   createForm() {
@@ -59,33 +57,5 @@ export class LoginComponent implements OnInit {
     console.log(password);
     this.authService.login(username, password);
     this.router.navigate(['/home']);
-  }
-
-  whenModalClosed() {
-    console.log("func: when model closed")
-    this.modalReference.closed.subscribe(
-      () => {
-        const user: RegisterRequest = this.modalReference.componentInstance.user;
-        console.log(this.modalReference);
-        console.log("calıs be abim");
-        this.loginForm.patchValue({
-          username: user.username,
-          password: user.password
-        });
-      }
-    );
-
-    /**
-     * this.loginForm.patchValue({
-        username: res.username,
-        password: res.password
-      });
-     */
-    // this.modalReference.closed.subscribe(() => {
-    //   this.loginForm.patchValue({
-    //     username: user.username,
-    //     password: user.password
-    //   });
-    // });
   }
 }

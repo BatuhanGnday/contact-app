@@ -1,23 +1,31 @@
 <div class="modal-header">
-  <div class="modal-title">{{contact.fullName}}</div>
+  <div class="modal-title">{{contact.value.fullName}}</div>
 </div>
 <div class="modal-body">
   <form [formGroup]="contactForm">
-    <div class="col mb-4">
-      <input type="text" formControlName="fullName" class="form-control" placeholder="Full Name" aria-label="Full Name">
+    <div class="col mb-2">
+      <label for="fullName" class="form-label">Full Name</label>
+      <input id="fullName" type="text" formControlName="fullName" class="form-control" placeholder="Full Name" aria-label="Full Name">
     </div>
-    <div class="col mb-4">
-      <input type="text" formControlName="phoneNumber" class="form-control" placeholder="Phone Number" aria-label="Phone Number">
+    <div class="col mb-2">
+      <label for="phoneNumber" class="form-label">GSM</label>
+      <input id="phoneNumber" type="text" formControlName="phoneNumber" class="form-control" placeholder="Phone Number" aria-label="Phone Number">
     </div>
-    <div class="col mb-4">
-      <input type="text" formControlName="address" class="form-control" placeholder="Address" aria-label="Address">
+    <div class="col mb-2">
+      <label for="address" class="form-label">Address</label>
+      <input id="address" type="text" formControlName="address" class="form-control" placeholder="Address" aria-label="Address">
     </div>
-    <div class="col mb-4">
-      <input type="text" formControlName="province" class="form-control" placeholder="Province" aria-label="Province">
+    <div class="col mb-2">
+      <label for="province" class="form-label">Province</label>
+      <input id="province" type="text" formControlName="province" class="form-control" placeholder="Province" aria-label="Province">
     </div>
-    <div class="col mb-4">
-      <input type="text" formControlName="district" class="form-control" placeholder="District" aria-label="District">
+    <div class="col mb-2">
+      <label for="district" class="form-label">District</label>
+      <input id="district" type="text" formControlName="district" class="form-control" placeholder="District" aria-label="District">
     </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
   </form>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-primary me-2" (click)="onSubmit()">Update</button>
+  <button class="btn btn-danger" (click)="onDiscard()">Discard Changes</button>
 </div>
